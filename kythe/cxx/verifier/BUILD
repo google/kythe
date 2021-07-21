@@ -149,6 +149,7 @@ cc_library(
         "-Wno-unused-variable",
         "-Wno-implicit-fallthrough",
     ],
+    visibility = [PUBLIC_VISIBILITY],
     deps = [
         ":lexparse",
         ":pretty_printer",
