@@ -17,7 +17,7 @@ load("@rules_python//python:repositories.bzl", "py_repositories")
 load("@bazel_toolchains//repositories:repositories.bzl", bazel_toolchains_repositories = "repositories")
 load("@rules_rust//rust:repositories.bzl", "rust_repositories")
 load("@rules_rust//proto:repositories.bzl", "rust_proto_repositories")
-load("@build_bazel_rules_nodejs//:index.bzl", "npm_install")
+load("@build_bazel_rules_nodejs//:index.bzl", "node_repositories", "npm_install")
 load(
     "@bazelruby_rules_ruby//ruby:deps.bzl",
     "rules_ruby_dependencies",
@@ -34,7 +34,7 @@ load("//kythe/rust/cargo:crates.bzl", "raze_fetch_remote_crates")
 
 def _rule_dependencies():
     go_rules_dependencies()
-    go_register_toolchains(version = "1.15.5")
+    go_register_toolchains(version = "1.16.5")
     gazelle_dependencies()
     rules_java_dependencies()
     rules_proto_dependencies()
@@ -1093,8 +1093,8 @@ def _go_dependencies():
         patches = [
             "@io_kythe//third_party/go:add_export_license.patch",
         ],
-        sum = "h1:2+jF2APAgFgXJnYOQGDGGiRvvEo6OhqZGQf46n9xgEw=",
-        version = "v0.0.0-20201027140754-0fcbb8f4928c",
+        sum = "h1:F1jZWGFhYfh0Ci55sIpILtKKK8p3i2/krTr0H1rg74I=",
+        version = "v0.0.0-20210630005230-0f9fa26af87c",
     )
     go_repository(
         name = "org_golang_x_text",
@@ -1115,13 +1115,13 @@ def _go_dependencies():
     )
     http_archive(
         name = "org_golang_x_tools",
-        # master, as of 2020-08-24
+        # v0.1.0, as of 2021-03-17
         urls = [
-            "https://mirror.bazel.build/github.com/golang/tools/archive/a1b87a1c0de44760bd00894ef736a8c36548068f.zip",
-            "https://github.com/golang/tools/archive/a1b87a1c0de44760bd00894ef736a8c36548068f.zip",
+            "https://mirror.bazel.build/github.com/golang/tools/archive/v0.1.0.zip",
+            "https://github.com/golang/tools/archive/v0.1.0.zip",
         ],
-        sha256 = "fe3987ccdff6a0e7e5a8353d4d1d2ca3ada5a72ea69462ba7b9b7343b5a25e06",
-        strip_prefix = "tools-a1b87a1c0de44760bd00894ef736a8c36548068f",
+        sha256 = "60a5cee8304b4d9130344f156a10ba648e315b5fca4b84939b765b26ce217dee",
+        strip_prefix = "tools-0.1.0",
         patches = [
             # deletegopls removes the gopls subdirectory. It contains a nested
             # module with additional dependencies. It's not needed by rules_go.
@@ -1144,6 +1144,11 @@ def _rust_dependencies():
     raze_fetch_remote_crates()
 
 def _js_dependencies():
+    node_repositories(
+        package_json = ["@io_kythe//:package.json"],
+        node_version = "16.1.0",
+    )
+
     npm_install(
         name = "npm",
         package_json = "@io_kythe//:package.json",
